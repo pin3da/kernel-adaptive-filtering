@@ -22,6 +22,6 @@ class QKLMS(KLMS):
         if distance < self.min_distance:
             self.weights[-1] += self.learning_step * self.error
         else:
-            new_weights = self.weights[-1] + self.learning_step * self.error
+            new_weights = self.learning_step * self.error
             self.inputs.append(new_input)
             self.weights.append(new_weights)

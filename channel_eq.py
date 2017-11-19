@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy
 
-from LMS import KLMS, LMS
+from LMS import LMS
+from KLMS import KLMS
 
 
 def gen_test_data():
@@ -14,7 +15,7 @@ def gen_test_data():
     tmp[1:] = tmp[0:-1]
     tmp[0] = 0
     x = s + 0.5 * tmp
-    ns = numpy.random.normal(0, 1, s.shape[1])
+    ns = 0.4 * numpy.random.normal(0, 1, s.shape[1])
     # non linearity
     r = x - 0.9 * (x ** 2) + ns
 
@@ -69,7 +70,7 @@ def get_training_error(adap_filter, X, X_te, T, T_te, TD):
 if __name__ == '__main__':
 
     X, X_te, T, T_te, TD = gen_test_data()
-    filters = [LMS(TD, 0.01), KLMS(X[92], 0.2)]
+    filters = [LMS(TD, 0.01), KLMS(TD, X[0], T[0], 0.2, 2.25)]
     for fi in filters:
         err = get_training_error(fi, X, X_te, T, T_te, TD)
         plt.plot(err[20:], label=fi.name())
