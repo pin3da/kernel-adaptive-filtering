@@ -38,5 +38,5 @@ class KLMS():
     def update(self, new_input, expected):
         self.error = expected - self.predict(new_input)
         self.inputs.append(new_input)
-        new_weights = self.learning_step * self.error
+        new_weights = self.weights[-1] + self.learning_step * self.error
         self.weights.append(new_weights)
