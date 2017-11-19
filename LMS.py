@@ -1,8 +1,7 @@
 import numpy as np
-import math
 
 
-class LMS():
+class LMS:
 
     def __init__(self, num_params, learning_step):
         self.weights = np.ones(num_params)
@@ -11,20 +10,30 @@ class LMS():
     def predict(self, new_input):
         return self.weights.dot(new_input)
 
-    def update_weights(self, new_input, desired_output):
+    def update(self, new_input, desired_output):
         prediction_error = desired_output - self.predict(new_input)
-        self.weights += self.learning_step * prediction_error.dot(new_input)
+        self.weights += self.learning_step * prediction_error * new_input
 
 
-# Sine
-input_data = np.arange(0, 2 * math.pi, math.pi / 10)
-output_data = np.sin(input_data)
+def kernel(x, y):
+    dist = x - y
+    dist = dist.dot(dist)
+    return np.exp(-dist * 0.1)
 
-lms = LMS(1, 0.1)
 
-for i in range(0, len(input_data)):
-    print('Prediction: ' + lms.predict(input_data[i]).__str__())
-    print('Wanted: ' + output_data[i].__str__())
-    print('Current Weight:' + lms.weights.__str__())
-    print('------')
-    lms.update_weights(input_data[i], output_data[i])
+class KLMS:
+    def __init__(self, x, learning_step):
+        self.alpha = [learning_step * x]
+        self.u = [x]
+        self.learning_step = learning_step
+
+    def predict(self, x):
+        ans = 0
+        for i in range(len(self.alpha)):
+            ans += self.alpha[i] * kernel(self.u[i], x)
+        return ans
+
+    def update(self, x, y):
+        error = y - self.predict(x)
+        self.alpha.append(self.learning_step * error)
+        self.u.append(x)

@@ -33,15 +33,16 @@ class RMS():
         self.weights += k.dot(prediction_error)
 
 
-# Sine
-input_data = np.arange(0, 2 * math.pi, math.pi / 10)
-output_data = np.sin(input_data)
+if __name__ == '__main__':
+    # Sine
+    input_data = np.arange(0, 2 * math.pi, math.pi / 10)
+    output_data = np.sin(input_data)
 
-rms = RMS(1)
+    rms = RMS(1)
 
-for i in range(0, len(input_data)):
-    print('Prediction: ' + rms.predict(input_data[i]).__str__())
-    print('Wanted: ' + output_data[i].__str__())
-    print('Current Weight:' + rms.weights.__str__())
-    print('------')
-    rms.update_weights(input_data[i], output_data[i])
+    for i in range(0, len(input_data)):
+        print('Prediction: ' + rms.predict(input_data[i]).__str__())
+        print('Wanted: ' + output_data[i].__str__())
+        print('Current Weight:' + rms.weights.__str__())
+        print('------')
+        rms.update_weights(input_data[i], output_data[i])
