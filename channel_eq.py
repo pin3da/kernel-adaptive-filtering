@@ -3,11 +3,8 @@ import numpy
 
 from LMS import LMS
 from KLMS import KLMS
-<<<<<<< HEAD
 from KAPA import KAPA1
-=======
 from QKLMS import QKLMS
->>>>>>> Fixes QKLMS and adds it to tests.
 
 
 def gen_test_data():
