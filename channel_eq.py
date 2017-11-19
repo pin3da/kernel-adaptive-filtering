@@ -3,7 +3,11 @@ import numpy
 
 from LMS import LMS
 from KLMS import KLMS
+<<<<<<< HEAD
 from KAPA import KAPA1
+=======
+from QKLMS import QKLMS
+>>>>>>> Fixes QKLMS and adds it to tests.
 
 
 def gen_test_data():
@@ -79,14 +83,12 @@ def get_training_error(adap_filter, X, X_te, T, T_te, TD):
 if __name__ == '__main__':
 
     X, X_te, T, T_te, TD = gen_test_data()
-    # X, X_te, T, T_te, TD = gen_sin_data()
-
     filters = [
         LMS(TD, 0.01),
-        KAPA1(X[0], T[0], 10, 0.2, 2.25),
         KLMS(TD, X[0], T[0], 0.2, 2.25),
+        QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
+        KAPA1(X[0], T[0], 10, 0.2, 2.25)
     ]
-
     for fi in filters:
         err = get_training_error(fi, X, X_te, T, T_te, TD)
         plt.plot(err[20:], label=fi.name())
