@@ -3,6 +3,7 @@ import numpy
 
 from LMS import LMS
 from KLMS import KLMS
+from KAPA import KAPA1
 
 
 def gen_test_data():
@@ -25,8 +26,8 @@ def gen_test_data():
     D = 2
 
     # data size
-    N_tr = 1000
-    N_te = 5
+    N_tr = 300
+    N_te = 10
 
     # train data
     X = numpy.zeros((N_tr, TD))
@@ -51,6 +52,14 @@ def gen_test_data():
     return X, X_te, T, T_te, TD
 
 
+def gen_sin_data():
+    X = numpy.arange(0, 2 * numpy.pi, numpy.pi / 1000)
+    T = numpy.sin(X)
+    X_te = numpy.arange(0, 2 * numpy.pi, numpy.pi / 10)
+    T_te = numpy.sin(X_te)
+    return X, X_te, T, T_te, 1
+
+
 def get_training_error(adap_filter, X, X_te, T, T_te, TD):
     N_tr = X.shape[0]
     N_te = X_te.shape[0]
@@ -70,7 +79,14 @@ def get_training_error(adap_filter, X, X_te, T, T_te, TD):
 if __name__ == '__main__':
 
     X, X_te, T, T_te, TD = gen_test_data()
-    filters = [LMS(TD, 0.01), KLMS(TD, X[0], T[0], 0.2, 2.25)]
+    # X, X_te, T, T_te, TD = gen_sin_data()
+
+    filters = [
+        LMS(TD, 0.01),
+        KAPA1(X[0], T[0], 10, 0.2, 2.25),
+        KLMS(TD, X[0], T[0], 0.2, 2.25),
+    ]
+
     for fi in filters:
         err = get_training_error(fi, X, X_te, T, T_te, TD)
         plt.plot(err[20:], label=fi.name())
