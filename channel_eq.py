@@ -69,13 +69,13 @@ def get_training_error(adap_filter, X, X_te, T, T_te, TD):
 if __name__ == '__main__':
 
     X, X_te, T, T_te, TD = gen_test_data()
-    lms = LMS(TD, 0.01)
-    err1 = get_training_error(lms, X, X_te, T, T_te, TD)
-    plt.plot(err1[20:], label='LMS')
-    klms = KLMS(X[92], 0.2)
-    err2 = get_training_error(klms, X, X_te, T, T_te, TD)
-    plt.plot(err2[20:], label='KLMS')
+    filters = [LMS(TD, 0.01), KLMS(X[92], 0.2)]
+    for fi in filters:
+        err = get_training_error(fi, X, X_te, T, T_te, TD)
+        plt.plot(err[20:], label=fi.name())
+
     plt.legend()
     plt.ylabel('MSE')
     plt.xlabel('iteration')
+    # plt.savefig('./compare.png')
     plt.show()

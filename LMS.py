@@ -14,6 +14,9 @@ class LMS:
         prediction_error = desired_output - self.predict(new_input)
         self.weights += self.learning_step * prediction_error * new_input
 
+    def name(self):
+        return 'LMS'
+
 
 def kernel(x, y):
     dist = x - y
@@ -37,3 +40,6 @@ class KLMS:
         error = y - self.predict(x)
         self.alpha.append(self.learning_step * error)
         self.u.append(x)
+
+    def name(self):
+        return 'Kernel LMS'
