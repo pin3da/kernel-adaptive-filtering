@@ -23,7 +23,6 @@ class KRLS():
         return np.exp(-1 * term)
 
     def predict(self, new_input):
-        answer = 0
         h = np.array([
             self.kernel(new_input, old_input) for old_input in self.inputs
         ]).reshape(1, len(self.inputs))
@@ -50,6 +49,9 @@ class KRLS():
         new_weights[Q_size - 1][0] = (1 / r) * error
         self.weights = new_weights
         self.inputs.append(new_input)
+
+        # reduce the regularization as we get more data
+        self.reg_param *= 0.9
 
     def name(self):
         return 'KRLS'
