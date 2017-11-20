@@ -5,6 +5,7 @@ from LMS import LMS
 from KLMS import KLMS
 from KAPA import KAPA1
 from QKLMS import QKLMS
+from KRLS import KRLS
 
 
 def gen_test_data():
@@ -27,8 +28,8 @@ def gen_test_data():
     D = 2
 
     # data size
-    N_tr = 300
-    N_te = 10
+    N_tr = 100
+    N_te = 5
 
     # train data
     X = numpy.zeros((N_tr, TD))
@@ -84,7 +85,8 @@ if __name__ == '__main__':
         LMS(TD, 0.01),
         KLMS(TD, X[0], T[0], 0.2, 2.25),
         QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
-        KAPA1(X[0], T[0], 10, 0.2, 2.25)
+        KAPA1(X[0], T[0], 10, 0.2, 2.25),
+        KRLS(X[0], T[0], 0.5, 2.25)
     ]
     for fi in filters:
         err = get_training_error(fi, X, X_te, T, T_te, TD)
