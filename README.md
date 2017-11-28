@@ -1,11 +1,29 @@
 # kernel-adaptive-filtering
 
-- [ ] (Kernel) Least Mean Square
-- [ ] Q - (Kernel) Least Mean Square
-- [ ] (Kernel) Affine projection algorithms
-- [ ] (Kernel) Recursive Least Mean Square
-- [ ] (Kernel) Exponentially Weighted Recursive Least Mean Square
-- [ ] (Kernel) Extended Recursive Least Mean Square
+Implementation of different algorithms for adaptive filtering 
+tested with two problems:
+
+- Non linear channel equalization.
+- Lorenz Oscillator
+
+Progress:
+
+- [x] Least Mean Square
+- [x] Kernel Least Mean Square
+- [x] Quantized Kernel Least Mean Square
+- [ ] Affine projection algorithms 1
+- [ ] Affine projection algorithms 2
+- [ ] Affine projection algorithms 3
+- [ ] Affine projection algorithms 4
+- [x] Kernel Affine projection algorithms 1
+- [ ] Kernel Affine projection algorithms 2
+- [ ] Kernel Affine projection algorithms 3
+- [ ] Kernel Affine projection algorithms 4
+- [x] Recursive Least Mean Square (untested)
+- [x] Kernel Recursive Least Mean Square
+- [x] Crossentropy - KLMS
+
+All the implementations are based on the book "KERNEL ADAPTIVE FILTERING: A Comprehensive Introduction"
 
 --------------
 [Manuel Pineda](https://github.com/pin3da/) - [Carlos Gonzalez](https://github.com/caal-15/)
