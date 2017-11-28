@@ -505,13 +505,10 @@ class APA4:
         D[: -1] = self.D[-tmp:]
         D[-1] = desired_output
 
-        y = U.T.dot(self.w)
-        e = D - y
-
         t = U.shape[1]
         norm_fact = np.linalg.pinv(self.eps * np.eye(t) + U.T.dot(U))
 
-        self.w = (1 - self.eta) * self.w + self.eta * U.dot(norm_fact).dot(e)
+        self.w = (1 - self.eta) * self.w + self.eta * U.dot(norm_fact).dot(D)
         self.U = U
         self.D = D
 
