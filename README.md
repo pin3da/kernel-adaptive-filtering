@@ -13,8 +13,8 @@ Progress:
 - [x] Quantized Kernel Least Mean Square
 - [x] Affine projection algorithms 1
 - [x] Affine projection algorithms 2
-- [ ] Affine projection algorithms 3
-- [ ] Affine projection algorithms 4
+- [x] Affine projection algorithms 3
+- [x] Affine projection algorithms 4
 - [x] Kernel Affine projection algorithms 1
 - [x] Kernel Affine projection algorithms 2
 - [ ] Kernel Affine projection algorithms 3
