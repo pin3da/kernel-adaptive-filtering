@@ -78,9 +78,9 @@ class KAPA2(Kernel):
         self,
         first_input,
         first_output,
-        learning_step,
-        sigma,
-        sample_size
+        learning_step=0.5,
+        sigma=1,
+        sample_size=5
     ):
         self.weights = [learning_step * first_output]
         self.inputs = [first_input]
@@ -95,6 +95,17 @@ class KAPA2(Kernel):
             estimate += self.weights[i] * self.kernel(self.inputs[i], new_input)
         return estimate
 
+    def calc_G(self):
+        tmp = len(self.weights)
+        tmp2 = min(tmp, self.sample_size)
+        G = np.zeros((tmp2, tmp2))
+        for i in range(max(0, tmp - self.sample_size), tmp):
+            for j in range(max(0, tmp - self.sample_size), tmp):
+                i_g = i - max(0, tmp - self.sample_size)
+                j_g = j - max(0, tmp - self.sample_size)
+                G[j_g][i_g] = self.kernel(self.inputs[i], self.inputs[j])
+        return G
+
     def update(self, new_input, new_output):
         tmp = len(self.weights)
         errors = []
@@ -103,17 +114,12 @@ class KAPA2(Kernel):
         err_vec = np.array(errors)
 
         tmp2 = min(tmp, self.sample_size)
-        G = np.zeros((tmp2, tmp2))
-        for i in range(max(0, tmp - self.sample_size), tmp):
-            for j in range(max(0, tmp - self.sample_size), tmp):
-                i_g = i - max(0, tmp - self.sample_size)
-                j_g = j - max(0, tmp - self.sample_size)
-                G[j_g][i_g] = self.kernel(self.inputs[i], self.inputs[j])
+        G = self.calc_G()
         G_inv = np.linalg.inv(G + 1e-5 * np.identity(tmp2))
-        weight_deltas = G_inv.dot(err_vec).T * self.learning_step
+        weight_deltas = G_inv.dot(err_vec) * self.learning_step
         for i in range(max(0, tmp - self.sample_size), tmp):
             self.weights[i] += (
-                weight_deltas[0][i - max(0, tmp - self.sample_size)])
+                weight_deltas[i - max(0, tmp - self.sample_size)])
 
         estimate = self.predict(new_input)
         error = new_output - estimate
@@ -125,6 +131,83 @@ class KAPA2(Kernel):
         return 'KAPA2'
 
 
+class KAPA3(KAPA1):
+    def __init__(
+        self,
+        first_input,
+        first_output,
+        learning_step=0.5,
+        sigma=1,
+        sample_size=5,
+        reg_param=0.1
+    ):
+        super().__init__(
+            first_input, first_output, sample_size, learning_step, sigma)
+        self.reg_param = reg_param
+
+    def update(self, new_input, new_output):
+        tmp = len(self.a)
+        for i in range(0, tmp):
+            y = self.predict(self.u[i])
+            e = self.d[i] - y
+            if i >= max(0, tmp - self.K):
+                self.a[i] *= (1 - self.eta * self.reg_param)
+                self.a[i] += self.eta * e
+            else:
+                self.a[i] *= (1 - self.eta * self.reg_param)
+
+        error = new_output - self.predict(new_input)
+        self.u.append(new_input)
+        self.a.append(self.eta * error)
+        self.d.append(new_output)
+
+    def name(self):
+        return 'KAPA3'
+
+
+class KAPA4(KAPA2):
+
+    def __init__(
+        self,
+        first_input,
+        first_output,
+        learning_step=0.5,
+        sigma=1,
+        sample_size=5,
+        reg_param=0.1
+    ):
+        super().__init__(
+            first_input, first_output, learning_step, sigma, sample_size)
+        self.reg_param = reg_param
+
+    def update(self, new_input, new_output):
+        G = self.calc_G()
+        G_inv = np.linalg.inv(G + self.reg_param * np.identity(G.shape[0]))
+
+        tmp = len(self.weights)
+        d_np = np.array(self.outputs[max(0, tmp - self.sample_size):tmp])
+        d_est = G_inv.dot(d_np)
+
+        for i in range(0, tmp):
+            i_est = self.predict(self.inputs[i])
+            i_err = self.outputs[i] - i_est
+            if i >= max(0, tmp - self.sample_size):
+                self.weights[i] *= (1 - self.learning_step)
+                self.weights[i] += (
+                    self.learning_step *
+                    d_est[i - max(0, tmp - self.sample_size)])
+            else:
+                self.weights[i] *= (1 - self.learning_step)
+
+        error = new_output - self.predict(new_input)
+        self.outputs.append(new_output)
+        self.inputs.append(new_input)
+        self.weights.append(self.learning_step * error)
+
+    def name(self):
+        return 'KAPA4'
+
+
 class KLMS(Kernel):
     def __init__(
         self,
@@ -132,7 +215,7 @@ class KLMS(Kernel):
         first_input=None,
         first_output=None,
         learning_step=0.5,
-        sigma=0.5
+        sigma=1
     ):
         if first_input is not None:
             self.inputs = [first_input]
@@ -168,8 +251,8 @@ class KRLS(Kernel):
         self,
         first_input,
         first_output,
-        reg_param=0.5,
-        sigma=0.5
+        reg_param=0.1,
+        sigma=1
     ):
         self.reg_param = reg_param
         self.sigma = sigma
