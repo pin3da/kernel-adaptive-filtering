@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy
 
-from filters import CKLMS, KAPA1, KLMS, KRLS, LMS, QKLMS, get_training_error
+from filters import CKLMS, KAPA1, KAPA2, KLMS, KRLS, LMS, QKLMS, get_training_error
 
 
 def gen_test_data():
@@ -67,6 +67,7 @@ if __name__ == '__main__':
         CKLMS(X[0], T[0], 0.2, 2.25, 2),
         QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
         KAPA1(X[0], T[0], 10, 0.2, 2.25),
+        KAPA2(X[0], T[0], 0.2, 2.25, 10),
         KRLS(X[0], T[0], 0.5, 2.25),
     ]
     for fi in filters:

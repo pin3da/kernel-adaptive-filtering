@@ -73,6 +73,58 @@ class KAPA1(Kernel):
         return 'KAPA1'
 
 
+class KAPA2(Kernel):
+    def __init__(
+        self,
+        first_input,
+        first_output,
+        learning_step,
+        sigma,
+        sample_size
+    ):
+        self.weights = [learning_step * first_output]
+        self.inputs = [first_input]
+        self.outputs = [first_output]
+        self.learning_step = learning_step
+        self.sigma = sigma
+        self.sample_size = sample_size
+
+    def predict(self, new_input):
+        estimate = 0
+        for i in range(0, len(self.weights)):
+            estimate += self.weights[i] * self.kernel(self.inputs[i], new_input)
+        return estimate
+
+    def update(self, new_input, new_output):
+        tmp = len(self.weights)
+        errors = []
+        for k in range(max(0, tmp - self.sample_size), tmp):
+            errors.append(self.outputs[k] - self.predict(self.inputs[k]))
+        err_vec = np.array(errors)
+
+        tmp2 = min(tmp, self.sample_size)
+        G = np.zeros((tmp2, tmp2))
+        for i in range(max(0, tmp - self.sample_size), tmp):
+            for j in range(max(0, tmp - self.sample_size), tmp):
+                i_g = i - max(0, tmp - self.sample_size)
+                j_g = j - max(0, tmp - self.sample_size)
+                G[j_g][i_g] = self.kernel(self.inputs[i], self.inputs[j])
+        G_inv = np.linalg.inv(G + 1e-5 * np.identity(tmp2))
+        weight_deltas = G_inv.dot(err_vec).T * self.learning_step
+        for i in range(max(0, tmp - self.sample_size), tmp):
+            self.weights[i] += (
+                weight_deltas[0][i - max(0, tmp - self.sample_size)])
+
+        estimate = self.predict(new_input)
+        error = new_output - estimate
+        self.inputs.append(new_input)
+        self.outputs.append(new_output)
+        self.weights.append(self.learning_step * error)
+
+    def name(self):
+        return 'KAPA2'
+
+
 class KLMS(Kernel):
     def __init__(
         self,
@@ -122,7 +174,7 @@ class KRLS(Kernel):
         self.reg_param = reg_param
         self.sigma = sigma
         self.Q = np.array(
-            [1 / reg_param * self.kernel(first_input, first_input)])
+            [1 / (reg_param + self.kernel(first_input, first_input))])
         self.weights = np.array([self.Q * first_output])
         self.inputs = [first_input]
 
