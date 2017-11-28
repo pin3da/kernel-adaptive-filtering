@@ -1,12 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy
 
-from LMS import LMS
-from KLMS import KLMS
-from KAPA import KAPA1
-from QKLMS import QKLMS
-from KRLS import KRLS
-from CKLMS import CKLMS
+from filters import CKLMS, KAPA1, KLMS, KRLS, LMS, QKLMS, get_training_error
 
 
 def gen_test_data():
@@ -61,22 +56,6 @@ def gen_sin_data():
     X_te = numpy.arange(0, 2 * numpy.pi, numpy.pi / 10)
     T_te = numpy.sin(X_te)
     return X, X_te, T, T_te, 1
-
-
-def get_training_error(adap_filter, X, X_te, T, T_te, TD):
-    N_tr = X.shape[0]
-    N_te = X_te.shape[0]
-
-    mse = []
-    for i in range(N_tr):
-        errors = []
-        for j in range(N_te):
-            errors.append(T_te[j] - adap_filter.predict(X_te[j]))
-        errors = numpy.array(errors)
-        mse.append(numpy.mean(errors ** 2))
-
-        adap_filter.update(X[i], T[i])
-    return mse
 
 
 if __name__ == '__main__':
