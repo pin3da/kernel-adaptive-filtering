@@ -1,10 +1,13 @@
+import time
+import contextlib
+
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import odeint
 
-from filters import (APA1, APA2, CKLMS, KAPA1, KLMS, KRLS, LMS, QKLMS,
-                     get_training_error)
+from filters import (APA1, APA2, APA3, APA4, CKLMS, KAPA1, KAPA2, KAPA3, KAPA4,
+                     KLMS, KRLS, LMS, QKLMS, get_training_error)
 
 
 def gen_lorenz_data():
@@ -61,6 +64,14 @@ def plot_lorenz(states):
     plt.show()
 
 
+@contextlib.contextmanager
+def time_it(name):
+    start = time.monotonic()
+    print(name, end=' ')
+    yield
+    print('took %f seconds' % (time.monotonic() - start))
+
+
 if __name__ == '__main__':
     states = gen_lorenz_data()
     # plot_lorenz(states)
@@ -72,21 +83,27 @@ if __name__ == '__main__':
     X, X_te, T, T_te, TD = split_training_and_testing(states)
     filters = [
         LMS(TD, 0.0001),
-        # KLMS(TD, X[0], T[0], 0.01, 10),  # not tuned yet
+        KLMS(TD, X[0], T[0], 0.034, 20),
         APA1(X[0], T[0], 10, 0.0001),
-        APA2(X[0], T[0], 10, 0.1),
-        # CKLMS(X[0], T[0], 0.2, 2.25, 2),  # not tuned yet
-        # QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
-        KAPA1(X[0], T[0], 10, 0.01, 1),
-        KRLS(X[0], T[0], 0.05, 1),
+        APA2(X[0], T[0], 10, 0.02),
+        APA3(X[0], T[0], 10, 0.0001, 0.01),
+        APA4(X[0], T[0], 10, 0.005),
+        CKLMS(X[0], T[0], 0.03, 10, 10),
+        # QKLMS(TD, X[0], T[0], 0.3, 50, 10),  # not working
+        KAPA1(X[0], T[0], 10, 0.3, 5),
+        KAPA2(X[0], T[0], 0.2, 2.25, 10),
+        KAPA3(X[0], T[0], 0.1, 2.25, 10),
+        KAPA4(X[0], T[0], 0.2, 2.25, 10),
+        KRLS(X[0], T[0], 1, 1),
     ]
     for fi in filters:
-        err = get_training_error(fi, X, X_te, T, T_te, TD)
+        with time_it(fi.name()):
+            err = get_training_error(fi, X, X_te, T, T_te, TD)
         plt.plot(err[50:], label=fi.name())
 
     plt.legend()
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Lorenz oscillator')
-    # plt.savefig('./compare-lorenz-1.png')
-    plt.show()
+    plt.savefig('./compare-lorenz-1.png')
+    # plt.show()
