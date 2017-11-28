@@ -23,7 +23,7 @@ def gen_test_data():
     # equalization time lag
     D = 2
 
-    # data size
+    # dataset size
     N_tr = 250
     N_te = 10
 
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         CKLMS(X[0], T[0], 0.2, 2.25, 2),
         QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
         KAPA1(X[0], T[0], 10, 0.2, 2.25),
-        KRLS(X[0], T[0], 0.5, 2.25)
+        KRLS(X[0], T[0], 0.5, 2.25),
     ]
     for fi in filters:
         err = get_training_error(fi, X, X_te, T, T_te, TD)
