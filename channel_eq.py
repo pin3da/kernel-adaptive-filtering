@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy
 
-from filters import (APA1, APA2, CKLMS, KAPA1, KAPA2, KLMS, KRLS, LMS, QKLMS,
-                     get_training_error)
+from filters import (APA1, APA2, APA3, APA4, CKLMS, KAPA1, KAPA2, KLMS, KRLS,
+                     LMS, QKLMS, get_training_error)
 
 
 def gen_test_data():
@@ -25,8 +25,8 @@ def gen_test_data():
     D = 2
 
     # dataset size
-    N_tr = 250
-    N_te = 10
+    N_tr = 300
+    N_te = 20
 
     # train data
     X = numpy.zeros((N_tr, TD))
@@ -67,10 +67,12 @@ if __name__ == '__main__':
 
     X, X_te, T, T_te, TD = gen_test_data()
     filters = [
-        LMS(TD, 0.01),
+        # LMS(TD, 0.01),
         KLMS(TD, X[0], T[0], 0.2, 2.25),
         APA1(X[0], T[0], 10, 0.001),
         APA2(X[0], T[0], 10, 0.01),
+        APA3(X[0], T[0], 10, 0.002, 0.1),
+        APA4(X[0], T[0], 10, 0.01),
         CKLMS(X[0], T[0], 0.2, 2.25, 2),
         QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
         KAPA1(X[0], T[0], 10, 0.2, 2.25),
@@ -85,5 +87,5 @@ if __name__ == '__main__':
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Non linear channel equalization')
-    # plt.savefig('./compare1.png')
+    # plt.savefig('./compare2.png')
     plt.show()
