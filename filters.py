@@ -292,6 +292,77 @@ class RMS:
         self.weights += k.dot(prediction_error)
 
 
+class APA1:
+    def __init__(self, u, d, K, eta):
+        self.U = np.array([u]).T
+        self.D = np.array([d])
+        self.w = np.zeros(len(u))  # initial guess
+        self.K = K
+        self.L = len(u)
+        self.eta = eta
+
+    def predict(self, new_input):
+        return self.w.T.dot(new_input)
+
+    def update(self, new_input, desired_output):
+        tmp = min(len(self.U), self.K)
+        U = np.zeros((self.L, tmp + 1))
+        D = np.zeros(tmp + 1)
+
+        U[:, :-1] = self.U[:, -tmp:]
+        U[:, -1] = new_input.T
+        D[: -1] = self.D[-tmp:]
+        D[-1] = desired_output
+
+        y = U.T.dot(self.w)
+        e = D - y
+
+        self.w += self.eta * U.dot(e)
+        self.U = U
+        self.D = D
+
+    def name(self):
+        return 'APA1'
+
+
+class APA2:
+    def __init__(self, u, d, K, eta, eps=1e-15):
+        self.U = np.array([u]).T
+        self.D = np.array([d])
+        self.w = np.zeros(len(u))  # initial guess
+        self.K = K
+        self.L = len(u)
+
+        self.eps = eps
+        self.eta = eta
+
+    def predict(self, new_input):
+        return self.w.T.dot(new_input)
+
+    def update(self, new_input, desired_output):
+        tmp = min(len(self.U), self.K)
+        U = np.zeros((self.L, tmp + 1))
+        D = np.zeros(tmp + 1)
+
+        U[:, :-1] = self.U[:, -tmp:]
+        U[:, -1] = new_input.T
+        D[: -1] = self.D[-tmp:]
+        D[-1] = desired_output
+
+        y = U.T.dot(self.w)
+        e = D - y
+
+        t = U.shape[1]
+        norm_fact = np.linalg.pinv(self.eps * np.eye(t) + U.T.dot(U))
+
+        self.w += self.eta * U.dot(norm_fact).dot(e)
+        self.U = U
+        self.D = D
+
+    def name(self):
+        return 'APA2'
+
+
 def get_training_error(adap_filter, X, X_te, T, T_te, TD):
     N_tr = X.shape[0]
     N_te = X_te.shape[0]
