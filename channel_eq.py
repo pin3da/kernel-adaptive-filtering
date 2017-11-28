@@ -85,5 +85,5 @@ if __name__ == '__main__':
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Non linear channel equalization')
-    plt.savefig('./compare1.png')
-    # plt.show()
+    # plt.savefig('./compare1.png')
+    plt.show()

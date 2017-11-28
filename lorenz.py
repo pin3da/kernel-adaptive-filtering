@@ -88,5 +88,5 @@ if __name__ == '__main__':
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Lorenz oscillator')
-    plt.savefig('./compare-lorenz-1.png')
-    # plt.show()
+    # plt.savefig('./compare-lorenz-1.png')
+    plt.show()
