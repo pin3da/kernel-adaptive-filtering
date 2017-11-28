@@ -322,7 +322,8 @@ class QKLMS(KLMS):
         min_distance=1,
         sigma=0.5
     ):
-        super().__init__(first_input, first_output, learning_step, sigma)
+        super().__init__(
+            num_params, first_input, first_output, learning_step, sigma)
         self.min_distance = min_distance
 
     def update(self, new_input, expected):

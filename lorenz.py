@@ -89,7 +89,7 @@ if __name__ == '__main__':
         APA3(X[0], T[0], 10, 0.0001, 0.01),
         APA4(X[0], T[0], 10, 0.005),
         CKLMS(X[0], T[0], 0.03, 10, 10),
-        # QKLMS(TD, X[0], T[0], 0.3, 50, 10),  # not working
+        QKLMS(TD, X[0], T[0], 0.03, 1, 10),
         KAPA1(X[0], T[0], 10, 0.3, 5),
         KAPA2(X[0], T[0], 0.2, 2.25, 10),
         KAPA3(X[0], T[0], 0.1, 2.25, 10),
@@ -105,5 +105,5 @@ if __name__ == '__main__':
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Lorenz oscillator')
-    plt.savefig('./compare-lorenz-1.png')
-    # plt.show()
+    #plt.savefig('./compare-lorenz-1.png')
+    plt.show()
