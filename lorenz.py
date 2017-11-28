@@ -3,7 +3,8 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import odeint
 
-from filters import KLMS, CKLMS, get_training_error
+from filters import (APA1, APA2, CKLMS, KAPA1, KLMS, KRLS, LMS, QKLMS,
+                     get_training_error)
 
 
 def gen_lorenz_data():
@@ -70,16 +71,22 @@ if __name__ == '__main__':
 
     X, X_te, T, T_te, TD = split_training_and_testing(states)
     filters = [
-        KLMS(TD, X[0], T[0], 0.2, 2.25),
-        CKLMS(X[0], T[0], 0.2, 2.25, 2),
+        LMS(TD, 0.0001),
+        # KLMS(TD, X[0], T[0], 0.01, 10),  # not tuned yet
+        APA1(X[0], T[0], 10, 0.0001),
+        APA2(X[0], T[0], 10, 0.1),
+        # CKLMS(X[0], T[0], 0.2, 2.25, 2),  # not tuned yet
+        # QKLMS(TD, X[0], T[0], 0.2, 0.225, 2.25),
+        KAPA1(X[0], T[0], 10, 0.01, 1),
+        KRLS(X[0], T[0], 0.05, 1),
     ]
     for fi in filters:
         err = get_training_error(fi, X, X_te, T, T_te, TD)
-        plt.plot(err[20:], label=fi.name())
+        plt.plot(err[50:], label=fi.name())
 
     plt.legend()
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Lorenz oscillator')
-    # plt.savefig('./compare.png')
-    plt.show()
+    plt.savefig('./compare-lorenz-1.png')
+    # plt.show()
