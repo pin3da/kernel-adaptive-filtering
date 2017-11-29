@@ -83,16 +83,16 @@ if __name__ == '__main__':
     X, X_te, T, T_te, TD = split_training_and_testing(states)
     filters = [
         LMS(TD, 0.0001),
-        KLMS(TD, X[0], T[0], 0.034, 20),
         APA1(X[0], T[0], 10, 0.0001),
         APA2(X[0], T[0], 10, 0.02),
         APA3(X[0], T[0], 10, 0.0001, 0.01),
-        # APA4(X[0], T[0], 10, 0.005),
-        CKLMS(X[0], T[0], 0.03, 10, 10),
-        QKLMS(TD, X[0], T[0], 0.03, 1, 10),
-        KAPA1(X[0], T[0], 10, 0.3, 5),
-        KAPA2(X[0], T[0], 0.2, 2.25, 10),
-        KAPA3(X[0], T[0], 0.1, 2.25, 10),
+        APA4(X[0], T[0], 10, 0.005),
+        # KLMS(TD, X[0], T[0], 0.034, 20),
+        # CKLMS(X[0], T[0], 0.03, 10, 10),
+        # QKLMS(TD, X[0], T[0], 0.03, 1, 10),
+        # KAPA1(X[0], T[0], 10, 0.3, 5),
+        # KAPA2(X[0], T[0], 0.2, 2.25, 10),
+        # KAPA3(X[0], T[0], 0.1, 2.25, 10),
         # KAPA4(X[0], T[0], 0.2, 2.25, 10),
         # KRLS(X[0], T[0], 1, 1),
     ]
@@ -105,5 +105,5 @@ if __name__ == '__main__':
     plt.ylabel('MSE')
     plt.xlabel('iteration')
     plt.title('Lorenz oscillator')
-    plt.savefig('./compare-lorenz-2.png')
-    # plt.show()
+    # plt.savefig('./compare-lorenz-2.png')
+    plt.show()
