@@ -17,8 +17,8 @@ Progress:
 - [x] Affine projection algorithms 4
 - [x] Kernel Affine projection algorithms 1
 - [x] Kernel Affine projection algorithms 2
-- [ ] Kernel Affine projection algorithms 3
-- [ ] Kernel Affine projection algorithms 4
+- [x] Kernel Affine projection algorithms 3
+- [x] Kernel Affine projection algorithms 4
 - [x] Recursive Least Mean Square (untested)
 - [x] Kernel Recursive Least Mean Square
 - [x] Crossentropy - KLMS
